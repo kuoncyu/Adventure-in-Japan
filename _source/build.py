@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, json, re, shutil, os
 sys.path.insert(0, '/home/claude/jp'); sys.path.insert(0, '/home/claude/jp/data')
-import content as C, gen, hokkaido, stops_north, tohoku, stops_north2, guides_tohoku, kanto, stops_central, guides_kanto, chubu, stops_south, guides_chubu, kinki, stops_kinki, guides_kinki, chushikoku, stops_east, guides_chushikoku, kyushu, stops_kyushu, guides_kyushu, okinawa, stops_island, guides_okinawa
+import content as C, gen, hokkaido, stops_north, tohoku, stops_north2, guides_tohoku, kanto, stops_central, guides_kanto, chubu, stops_south, guides_chubu, protagonist, player_scripts, kinki, stops_kinki, guides_kinki, chushikoku, stops_east, guides_chushikoku, kyushu, stops_kyushu, guides_kyushu, okinawa, stops_island, guides_okinawa
 
 SRC = '/home/claude/src/index.html'
 src = open(SRC, encoding='utf-8').read()
@@ -91,12 +91,13 @@ replace_decl('REGION_MEET_NARRATION', 'const REGION_MEET_NARRATION = ' + js(C.RE
 # 台灣專屬的主角群劇本：第 0 批先清空，之後隨各區批次重寫
 _i = find_decl('PLAYER_MAIN_SCRIPTS'); _j = find_decl('scriptToSteps') - 1
 while L[_j].strip() == '' or L[_j].strip().startswith('//'): _j -= 1
-repl[_i] = (_j, 'const PLAYER_MAIN_SCRIPTS = {};')
+repl[_i] = (_j, 'const PLAYER_MAIN_SCRIPTS = ' + js(player_scripts.PLAYER_MAIN_SCRIPTS) + ';')
 print('  PLAYER_MAIN_SCRIPTS (extended)     lines %d-%d' % (_i+1, _j+1))
-for nm in ('PROTAGONIST_PAIR_INTERACT', 'STOP_COMPANION_LINES', 'PLAYER_STOP_LINES',
-           'PROTAGONIST_STOP_BANTER', 'PROTAGONIST_FAREWELL'):
-    replace_decl(nm, 'const %s = {};' % nm)
-replace_decl('PROTAGONIST_MAIN_INTEGRATED', 'const PROTAGONIST_MAIN_INTEGRATED = {};')
+replace_decl('PLAYER_STOP_LINES', 'const PLAYER_STOP_LINES = ' + js(player_scripts.PLAYER_STOP_LINES) + ';')
+replace_decl('PROTAGONIST_PAIR_INTERACT', 'const PROTAGONIST_PAIR_INTERACT = ' + js(protagonist.PAIR_INTERACT) + ';')
+replace_decl('STOP_COMPANION_LINES', 'const STOP_COMPANION_LINES = ' + js(protagonist.STOP_COMPANION_LINES) + ';')
+replace_decl('PROTAGONIST_FAREWELL', 'const PROTAGONIST_FAREWELL = ' + js(protagonist.FAREWELL) + ';')
+replace_decl('PROTAGONIST_MAIN_INTEGRATED', 'const PROTAGONIST_MAIN_INTEGRATED = ' + js(protagonist.INTEGRATED) + ';')
 
 # ---------- 區域 ----------
 north_stops = list(stops_north.STOPS)
@@ -206,9 +207,18 @@ NAMEMAP = [("拉利．馬耀","渡邊颯太"),("林承翰","山本大翔"),("蘇
   ("郭子謙","高橋悠真"),("葉宛真","伊藤結衣"),("潘可柔","小林心春"),("洪建霖","比嘉海斗"),("許嘉恩","仲村美海"),
   ("柯世安","久保田誠"),("阿翰","小翔"),("小嵐","小咲"),("曉嵐","美咲"),("柏宇","小蓮"),("思妤","小陽"),("子謙","悠真"),
   ("宛真","結衣"),("阿利","小颯"),("可柔","心春"),("阿霖","海斗"),("建霖","海斗"),("嘉恩","美海"),
-  ("阿海","岩城源三"),("芊瑪","結城千夏"),("文瀾","藤原文彥"),("拉罕","小野岳"),("潘嫂","與那嶺千代")]
+  ("阿海","岩城源三"),("芊瑪","結城千夏"),("文瀾","藤原文彥"),("拉罕","小野岳"),("潘嫂","與那嶺千代"),("阿嬤","奶奶"),("阿公","爺爺")]
 for a, b in NAMEMAP: text = text.replace(a, b)
 FIXES = [
+ ("路上看到一攤新開的鹹酥雞就走不動了","路上看到一攤新開的炸雞塊攤就走不動了"),
+ ("跟我們部落的舞步有點像","跟我們阿蘇祭典的舞步有點像"),
+ ("那你教我幾招部落的舞步嘛","那你教我幾招祭典的舞步嘛"),
+ ("下次帶妳去看看真正的豐年祭","下次帶妳去看看真正的阿蘇火振り神事"),
+ ("下次帶妳去部落，讓奶奶教妳","下次帶妳來阿蘇，讓奶奶教妳"),
+ ("我帶你去聽部落老人家講古","我帶你去聽阿蘇的老人家講古"),
+ ("帶回部落說給大家聽","帶回家鄉說給大家聽"),
+ ("那族語裡面","那在地的方言裡面"),
+ ("唱給部落的奶奶聽","唱給奶奶聽"),
  ("怎麼也跑基隆來了！","怎麼也跑函館來了！"),
  ("我可不會讓你一個人在南部稱王。","我可不會讓你一個人在近畿稱王。"),
  ("嘿嘿，畢竟基隆是我的主場啊！走，我帶你去吃廟口甜不辣，順便講幾個你筆記本裡漏掉的地名！","嘿嘿，畢竟函館是我的主場啊！走，我帶你去朝市吃海鮮丼，順便講幾個你筆記本裡漏掉的地名！"),
