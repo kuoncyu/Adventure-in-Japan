@@ -707,7 +707,7 @@ const CHARACTER_ART = {};
    之後再玩就直接從本機讀取，不用再等待下載。
 */
 (function(){
-  var DB_NAME = "resource-pack-cache";
+  var DB_NAME = "jp-placename-resource-pack-cache";
   var DB_VERSION = 1;
   var STORE_NAME = "kv";
 
@@ -1693,8 +1693,8 @@ const BGM_FOLDER = "";   // 若把音樂放在子資料夾，改成 "audio/" 即
 const AUTO_OFFLINE_DOWNLOAD = false;
 
 const Offline = (function(){
-  const CACHE = "offline-pack-v1";
-  const SNOOZE_KEY = "offline-pack-snooze-until";
+  const CACHE = "jp-offline-pack-v1";
+  const SNOOZE_KEY = "jp-offline-pack-snooze-until";
   const supported = ("serviceWorker" in navigator) && ("caches" in window) && /^https?:$/.test(location.protocol);
   let ui = null, banner = null, busy = false;
 
@@ -3489,7 +3489,7 @@ function loadSaveCode(code){
 }
 
 // ---------- 本地保存進度 (localStorage) ----------
-const LOCAL_SAVE_KEY = "twlp-rpg-localsave-v1";
+const LOCAL_SAVE_KEY = "jp-placename-localsave-v1";
 const RESOURCE_CACHE_DB = "resource-pack-cache";
 function saveLocalProgress(){
   try{ localStorage.setItem(LOCAL_SAVE_KEY, serializeSave()); return true; }

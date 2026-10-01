@@ -1,5 +1,5 @@
 /* 離線資料包 Service Worker：已下載的檔案（首頁、圖檔資源包、背景音樂）離線時直接從本機讀取 */
-const CACHE = "jp-offline-pack-v3";
+const CACHE = "jp-offline-pack-v1";
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", e => e.waitUntil(self.clients.claim()));
 
